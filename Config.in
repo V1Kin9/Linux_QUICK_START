@@ -1,0 +1,47 @@
+mainmenu "UCTECHIP Linux Package"
+
+comment "Select the core series"
+
+choice
+	prompt "Core"
+	default WH32
+	help
+		This is a help text that can expand over multiple lines and give some information about
+		the configuration parameter.
+
+	config WH32
+		bool "WH32"
+
+	config WH64
+		bool "WH64"
+
+endchoice
+
+comment "Configures for the hart numbers"
+
+menu "Hart numbers"
+	config HART_NUM
+	int "Integer parameter between 1 and 4(Harts)"
+	default 1
+	range 1 4
+
+endmenu
+
+
+comment "Debug Configure"
+
+
+config Debug
+        bool "Debug for HWJ"
+        default n
+        help
+                This option is used for Debug
+
+menu "Frquency for HWJ"
+	visible if Debug
+	config SYS_CLK
+        int "Integer parameter between 0 and 100(MHz)"
+	default 50
+        range 0 100
+
+endmenu

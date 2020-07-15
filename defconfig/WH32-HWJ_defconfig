@@ -1,0 +1,25 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# UCTECHIP Linux Package
+#
+
+#
+# Select the core series
+#
+CONFIG_WH32=y
+# CONFIG_WH64 is not set
+
+#
+# Configures for the hart numbers
+#
+
+#
+# Hart numbers
+#
+CONFIG_HART_NUM=1
+
+#
+# Debug Configure
+#
+# CONFIG_Debug is not set
+CONFIG_SYS_CLK=50
