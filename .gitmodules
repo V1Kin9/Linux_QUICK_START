@@ -1,9 +1,11 @@
 [submodule "src/linux"]
 	path = src/linux
 	url = https://github.com/UCTECHIP/linux
+	branch = uctechip_4.19
 [submodule "src/opensbi"]
 	path = src/opensbi
 	url = https://github.com/UCTECHIP/opensbi
+	barnch = master
 [submodule "src/busybox"]
 	path = src/busybox
 	url = https://github.com/mirror/busybox
