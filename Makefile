@@ -5,7 +5,7 @@ endif
 # Configuration #
 preconfig:
 ifeq ("$(wildcard .config)","")
-        $(error "Please run make menuconfig first.")
+	$(error "Please run make menuconfig first.")
 endif
 
 menuconfig:
