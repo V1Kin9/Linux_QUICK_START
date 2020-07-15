@@ -1,3 +1,6 @@
 [submodule "src/linux"]
 	path = src/linux
 	url = https://github.com/UCTECHIP/linux
+[submodule "src/opensbi"]
+	path = src/opensbi
+	url = https://github.com/UCTECHIP/opensbi
