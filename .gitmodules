@@ -4,3 +4,7 @@
 [submodule "src/opensbi"]
 	path = src/opensbi
 	url = https://github.com/UCTECHIP/opensbi
+[submodule "src/busybox"]
+	path = src/busybox
+	url = https://github.com/mirror/busybox
+	branch = 1_32_stable
