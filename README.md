@@ -1,2 +1,2 @@
-# linux_QUICK_START
-QUICK_START for LS-Ext linux
+# Linux_QUICK_START
+QUICK_START for LS-Ext Linux
