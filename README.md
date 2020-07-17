@@ -138,14 +138,13 @@ $ make menuconfig
    You can find the finally Image in the directory *build/output*.
 
    
+P.S. You should type the  password of you PC for creating the character device *console* and *null*
 
-   P.S. You should type the  password of you PC for creating the character device *console* and *null*
-
-	```
-	------Create rootfs directons start...--------
-	--------Create root,dev....----------
-	Make node in dev/console dev/null
-	Please input the passwd of your PC for creating the console and null
-	[sudo] password for viking: 
-	```
+```
+------Create rootfs directons start...--------
+--------Create root,dev....----------
+Make node in dev/console dev/null
+Please input the passwd of your PC for creating the console and null
+[sudo] password for viking: 
+```
 
