@@ -90,7 +90,7 @@ You will see the version information if you compile it completely and add the in
 
 
 
-### Getting the sources
+### Getting the sources of code
 
 This repository uses submodules. You need the --recursive option to fetch the submodules automatically
 
