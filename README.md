@@ -115,9 +115,9 @@ $ git submodule update --init --recursive
 $ make sync
 ```
 
-   If you want to change the code, you can change the code in directory *build* temporarily.
+If you want to change the code, you can change the code in directory *build* temporarily.
 
-   When you want to get into the develop of the source code, I suggest you to change the code in the directory *src*, which will not be deleted when you run `$ make distclean`
+When you want to get into the develop of the source code, I suggest you to change the code in the directory *src*, which will not be deleted when you run `$ make distclean`
 
    
 
@@ -127,15 +127,15 @@ $ make sync
 $ make menuconfig
 ```
 
-   You can also run  `$ make list-defconfigs` to see the defconfigs of WH processors. 
+You can also run  `$ make list-defconfigs` to see the defconfigs of WH processors. 
 
-   For example, you can run `$ make WH32-HWJ_defconfig` to select WH32 as the building target for LS-Extended Board.
+For example, you can run `$ make WH32-HWJ_defconfig` to select WH32 as the building target for LS-Extended Board.
 
    
 
 3. When you done with the configuration, you should run `$ make all` to start building the Linux Image which includes the rootfs, build with busybox, and opensbi.
 
-   You can find the finally Image in the directory *build/output*.
+You can find the finally Image in the directory *build/output*.
 
    
 P.S. You should type the  password of you PC for creating the character device *console* and *null*
