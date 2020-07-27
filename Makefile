@@ -85,7 +85,7 @@ rootfs:
 PHONY += kernel
 kernel:
 	@echo '################## Building the kernel ##################'
-	@make -C build/linux -j4 
+	@make -C build/linux ARCH=riscv -j4 
 	$(OBJCOPY) -O binary build/linux/vmlinux build/linux/vmlinux.bin
 
 
