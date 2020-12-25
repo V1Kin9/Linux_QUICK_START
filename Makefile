@@ -56,16 +56,21 @@ STRIP           = $(CROSS_COMPILE)strip
 OBJCOPY         = $(CROSS_COMPILE)objcopy
 OBJDUMP         = $(CROSS_COMPILE)objdump
 
-RISCV_GDB	= riscv64-unknown-elf-gdb
+OPENOCDARGS	= -f defconfig/openocd/openocd.cfg
 
 export CROSS_COMPILE
 
-# Get the PATH of GNU
+# Get the PATH of Toolchain
 GCC_PATH=$(shell which $(CC))
 GNU_BIN=$(dir $(GCC_PATH))
 GNU_PATH=$(shell dirname $(GNU_BIN))
 GNU_LIB=$(join $(GNU_PATH), /sysroot/lib)
+RISCV_GDB=$(shell which riscv64-unknown-elf-gdb)
 
+# Get the PATH of Openocd
+RISCV_OPENOCD=$(shell which openocd)
+
+# Command of Debuger
 GDB_UPLOAD_ARGS ?= --batch
 GDB_UPLOAD_CMDS += -ex "set remotetimeout 240"
 GDB_UPLOAD_CMDS += -ex "target extended-remote $(HOST_IP):$(GDB_PORT)"
@@ -75,12 +80,14 @@ GDB_UPLOAD_CMDS += -ex 'thread apply all set $$dpc=0x40000000'
 GDB_UPLOAD_CMDS += -ex "monitor resume"
 GDB_UPLOAD_CMDS += -ex "quit"
 
+OPENOCDARGS     = -f defconfig/openocd/openocd.cfg
 
+# Get hart number
 ifndef CONFIG_HART_NUM
   CONFIG_HART_NUM = 1
 endif
 
-# rsync the src 
+# RSYNC the src 
 PHONY += sync
 sync:
 	@mkdir -p build
@@ -173,12 +180,17 @@ distclean:
 	@rm -rf build
 	@rm -rf .config*
 
+# RUN Openocd
+PHONY += run_openocd
+run_openocd:
+	$(RISCV_OPENOCD) $(OPENOCDARGS)
 
+# UPLOAD the Image
 PHONY += upload
 upload:
 	$(RISCV_GDB) build/output/Image $(GDB_UPLOAD_ARGS) $(GDB_UPLOAD_CMDS)
 
-
+# HELP
 PHONY += help
 help:
 	@echo 'Cleaning:'

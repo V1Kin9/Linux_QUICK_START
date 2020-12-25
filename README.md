@@ -5,6 +5,16 @@ typora-root-url: ./
 # Linux_QUICK_START
 This is a tool that quickly help you to build up the Linux on HWJ-SoC. Now it is used for building the kernel for UCTECHIP WH series processors. 
 
+This article is roughly divided into four parts:
+
+[Building the toolchain](#Building the toolchain)
+
+[Building the OpenOCD](#Building the OpenOCD)
+
+[Building the Image](#Building the Image)
+
+[Upload the Image](#Upload the Image)
+
 
 
 ## Building the toolchain
@@ -82,13 +92,17 @@ $ ./configure --prefix=/path/you/want/to/install --enable-multilib
 $ make
 ```
 
+#### Add the path to system environment
+
 Add the installation path of toolchain to the system environment:
 
 ``` 
 $ export PATH=$(PATH):/path/you/want/to/install/bin
 ```
 
-P.S. I suggest you to add the *toolchain path* to the system environment by adding it to the ~/.bashrc
+>  I suggest you to add the *toolchain path* to the system environment by adding it to the ~/.bashrc
+>
+> So that it will be convenient to compile next time
 
 
 
@@ -96,11 +110,47 @@ Test the toolchain by typing the following command to the Termial:
 
 ```
 $ riscv[32|64]-unknown-linux-gcc -v
+$ riscv64-unknown-elf-gcc -v
 ```
 
 You will see the version information if you compile it completely and add the installation path to the system environment successfully.
 
 
+
+## Building the OpenOCD
+
+### Getting the sources of code
+
+```
+$ git clone https://github.com/UCTECHIP/riscv-openocd.git
+```
+
+### Building the source code
+
+```
+$ cd riscv-openocd
+$ ./bootstrap
+$ ./configure --enable-ftdi --prefix=/path/you/want/to/install
+$ make && make install
+```
+
+#### Add the path to system environment
+
+Add the installation path of OpenOCD to the system environment:
+
+``` 
+$ export PATH=$(PATH):/path/you/want/to/install/bin
+```
+
+Test the OpenOCD by typing the following command to the Termial:
+
+```
+￼$ openocd -v 
+```
+
+
+
+You will see the version information if you compile it completely and add the installation path to the system environment successfully.
 
 ## Building the Image
 
@@ -160,9 +210,13 @@ For some reasons, we only use the newlib-toolchain to upload the program. If you
 
 1. Change the **HOST_IP** with your PC's IP in the file *Upload.in*
 
-2. Make sure you have already connected your PC to the FPGA board with OpenOCD. Configure your serial port correctly(115200,8E1).
+2. Make sure you have already connected your PC to the FPGA board. And then configure your serial port correctly(115200,8E1).
 
-3. Type the following command to upload the Image to the DDR of the FPGA board:
+3. Use the Openocd to connect:
+```
+$ make run_opneocd
+```
+4. Open another terminal and type the following command to upload the Image to the DDR of the FPGA board:
 
 ```
 $ make upload
@@ -269,3 +323,4 @@ S (lpj=15625)
 
 Please press Enter to activate this console. 
 ```
+
