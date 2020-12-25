@@ -1,0 +1,71 @@
+/dts-v1/;
+
+#define SYS_CLK 50000000
+#define RTC_CLK 1562500
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "UCTECHIP,HWJ-SoC";
+	model = "UCTECHIP,HWJ-SoC";
+
+	chosen {
+		bootargs = "console=ttyWH0,115200n8  debug loglevel=8";
+		stdout-path = "uart0:115200n8";
+	};
+
+	cpus {
+		timebase-frequency = <RTC_CLK>;
+	};
+
+	memory@400000000 {
+		device_type = "memory";
+#ifdef BOARD_S6
+                reg = <0x40000000 0x10000000>;
+#else
+                reg = <0x40000000 0x40000000>;
+#endif
+	};
+
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "UCTECHIP,HWJsoc";
+		ranges;
+    	};
+	
+	plic0: interrupt-controller@3c000000 {
+		compatible = "riscv,plic0";
+		#address-cells = <1>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		reg = <0x3c000000 0x4000000>;
+		riscv,max-priority = <7>;
+		riscv,ndev=<15>;
+	};
+
+	clint0: interrupt-controller@32000000 {
+		compatible = "riscv,clint0";
+		#address-cells = <1>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		reg = <0x32000000 0x10000>;
+	};
+	
+	timer0: timer@10000080 {
+        	compatible = "wh,timer";
+      		reg = <0x10000080 0x1f>;
+      		clock-frequency = <SYS_CLK>;
+        	interrupts = <3>;
+       		interrupt-parent = <&plic0>;
+    	};
+
+   
+	serial0: serial@10000010 {
+		compatible = "wh,uart0";
+		reg = <0x10000010 0x7>;
+		interrupts = <1>;
+		clock-frequency = <SYS_CLK>;
+		interrupt-parent = <&plic0>;
+	};
+};

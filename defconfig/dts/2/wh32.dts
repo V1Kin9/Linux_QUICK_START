@@ -1,0 +1,63 @@
+/dts-v1/;
+
+#include "HWJ.dtsi"
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "UCTECHIP,WH";
+	model = "UCTECHIP,WH";
+
+	aliases {
+		uart0 = &serial0;
+	};
+
+	chosen {
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		CPU0: cpu@0 {
+			device_type = "cpu";
+			reg = <0>;
+			status = "okay";
+			compatible = "riscv";
+			riscv,isa = "rv32imafdc";
+			mmu-type = "riscv,sv32";
+			clock-frequency = <SYS_CLK>;
+			d-cache-size = <32768>;
+			d-cache-line-size = <64>;
+			CPU0_intc: interrupt-controller {
+				#interrupt-cells = <1>;
+				interrupt-controller;
+				compatible = "riscv,cpu-intc";
+			};
+		};
+                CPU1: cpu@1 {
+                        device_type = "cpu";
+                        reg = <1>;
+                        status = "okay";
+                        compatible = "riscv";
+                        riscv,isa = "rv32imafdc";
+                        mmu-type = "riscv,sv32";
+                        clock-frequency = <SYS_CLK>;
+                        d-cache-size = <32768>;
+                        d-cache-line-size = <64>;
+                        CPU1_intc: interrupt-controller {
+                                #interrupt-cells = <1>;
+                                interrupt-controller;
+                                compatible = "riscv,cpu-intc";
+                        };
+                };
+
+	};
+};
+
+
+&plic0{
+	interrupts-extended = <&CPU0_intc 11 &CPU0_intc 9 &CPU1_intc 11 &CPU1_intc 9>;
+};
+
+&clint0{
+	interrupts-extended =<&CPU0_intc 3 &CPU0_intc 7 &CPU1_intc 3 &CPU1_intc 7>;
+};

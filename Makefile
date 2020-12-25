@@ -13,7 +13,6 @@ endif
 # Menu of configuration
 PHONY += menuconfig
 menuconfig:
-
 	@mkdir -p build
 	@rsync -ur host-tools/menuconfig build
 	@make -C build/menuconfig
@@ -58,6 +57,16 @@ OBJDUMP         = $(CROSS_COMPILE)objdump
 
 export CROSS_COMPILE
 
+# Get the PATH of GNU
+GCC_PATH=$(shell which $(CC))
+GNU_BIN=$(dir $(GCC_PATH))
+GNU_PATH=$(shell dirname $(GNU_BIN))
+GNU_LIB=$(join $(GNU_PATH), /sysroot/lib)
+
+ifndef CONFIG_HART_NUM
+  CONFIG_HART_NUM = 1
+endif
+
 # rsync the src 
 PHONY += sync
 sync:
@@ -70,8 +79,8 @@ sync:
 	@cp defconfig/linux/$(target)-defconfig build/linux/arch/riscv/configs/defconfig
 	@make -C build/linux ARCH=riscv defconfig
 	@rsync -ur src/opensbi build
-	@rsync -ur defconfig/dts build
-
+	@mkdir -p build/dts
+	@cp defconfig/dts/$(CONFIG_HART_NUM)/* build/dts
 
 # rootfs 
 PHONY += rootfs
@@ -79,7 +88,7 @@ rootfs:
 	@echo '################## Building the rootfs ##################'
 	@make -C build/busybox 
 	@make -C build/busybox install
-
+	@cp -arf $(GNU_LIB)/*so* build/rootfs/lib
 
 # Linux Kernel
 PHONY += kernel
@@ -88,21 +97,43 @@ kernel:
 	@make -C build/linux ARCH=riscv -j4 
 	$(OBJCOPY) -O binary build/linux/vmlinux build/linux/vmlinux.bin
 
+#Fixed frequency for dts
+PHONY += fix_dts
+fix_dts:
+ifdef CONFIG_Debug
+	$(shell sed -i "s/#define.*SYS_CLK.*/#define SYS_CLK $(CONFIG_SYS_CLK)/" build/dts/HWJ.dtsi\
+	&& sed -i "s/#define.*RTC_CLK.*/#define RTC_CLK $(CONFIG_RTC_CLK)/" build/dts/HWJ.dtsi)
+endif
 
 # dtb
 PHONY += dtb
-dtb:
+dtb:	fix_dts
 	@echo '################## Compiling the dts ##################'
 	-cp build/linux/scripts/dtc/dtc build/dts
 	-cp host-tools/dts2dtb.sh build/dts
 	cd build/dts/ && ./dts2dtb.sh $(target)
 
+#Fixed frequency for opensbi
+PHONY += fix_opensbi
+fix_opensbi:
+	$(shell sed -i "s/#define.*WH_HART_COUNT.*/#define WH_HART_COUNT $(CONFIG_HART_NUM)/" build/opensbi/platform/uctechip/$(target)/platform.h)
+
+ifdef CONFIG_Debug
+	$(shell sed -i "s/#define.*WH_SYS_CLK.*/#define WH_SYS_CLK $(CONFIG_SYS_CLK)/" build/opensbi/platform/uctechip/$(target)/platform.h)
+endif
+
+#opensbi configuration
+OPENSBI_CFLAGS = PLATFORM=uctechip/$(target) FW_PAYLOAD_PATH=$(CURDIR)/build/linux/vmlinux.bin FW_PAYLOAD_FDT_PATH=$(CURDIR)/build/dts/$(target).dtb
+
+ifdef CONFIG_Debug
+OPENSBI_CFLAGS += FW_PAYLOAD_FDT_ADDR=$(CONFIG_DTB_ADDRESS)
+endif
 
 # RISC-V opensbi
 PHONY += opensbi
-opensbi:
+opensbi:	fix_opensbi
 	@echo '################## Building the opensbi ##################'
-	@make -C build/opensbi PLATFORM=uctechip/$(target) FW_PAYLOAD_PATH=$(CURDIR)/build/linux/vmlinux.bin FW_PAYLOAD_FDT_PATH=$(CURDIR)/build/dts/$(target).dtb
+	make -C build/opensbi $(OPENSBI_CFLAGS)
 
 # Image is used to build the kernel when you changed the core of Linux kernel
 PHONY += Image
@@ -117,11 +148,11 @@ all: preconfig sync rootfs Image
 # CLEAN
 PHONY += clean
 clean: 	
-	@make -C build/busybox clean
 	@make -C build/linux clean
 	@make -C build/opensbi clean
 	@rm -f build/dts/$(target).dtb
 	@rm -f build/output/Image
+	@make -C build/busybox clean
 
 # REMOVE the build
 PHONY += distclean
