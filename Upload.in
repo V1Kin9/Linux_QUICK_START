@@ -1,0 +1,2 @@
+HOST_IP := localhost
+GDB_PORT := 3333

@@ -1,3 +1,4 @@
+include ./Upload.in
 ifneq ("$(wildcard .config)","")
 	include .config
 endif
@@ -55,6 +56,8 @@ STRIP           = $(CROSS_COMPILE)strip
 OBJCOPY         = $(CROSS_COMPILE)objcopy
 OBJDUMP         = $(CROSS_COMPILE)objdump
 
+RISCV_GDB	= riscv64-unknown-elf-gdb
+
 export CROSS_COMPILE
 
 # Get the PATH of GNU
@@ -62,6 +65,16 @@ GCC_PATH=$(shell which $(CC))
 GNU_BIN=$(dir $(GCC_PATH))
 GNU_PATH=$(shell dirname $(GNU_BIN))
 GNU_LIB=$(join $(GNU_PATH), /sysroot/lib)
+
+GDB_UPLOAD_ARGS ?= --batch
+GDB_UPLOAD_CMDS += -ex "set remotetimeout 240"
+GDB_UPLOAD_CMDS += -ex "target extended-remote $(HOST_IP):$(GDB_PORT)"
+GDB_UPLOAD_CMDS += -ex "monitor reset halt"
+GDB_UPLOAD_CMDS += -ex "load"
+GDB_UPLOAD_CMDS += -ex 'thread apply all set $$dpc=0x40000000'
+GDB_UPLOAD_CMDS += -ex "monitor resume"
+GDB_UPLOAD_CMDS += -ex "quit"
+
 
 ifndef CONFIG_HART_NUM
   CONFIG_HART_NUM = 1
@@ -161,6 +174,11 @@ distclean:
 	@rm -rf .config*
 
 
+PHONY += upload
+upload:
+	$(RISCV_GDB) build/output/Image $(GDB_UPLOAD_ARGS) $(GDB_UPLOAD_CMDS)
+
+
 PHONY += help
 help:
 	@echo 'Cleaning:'
@@ -174,7 +192,10 @@ help:
 	@echo '	dtb			- build the device tree binary, which needs the dtc build by Linux'
 	@echo '	kernel			- build the Linux kernel'
 	@echo '	rootfs			- use busybox to build the filesystem for the Linux kernel'
-	@echo
+	@echo 
+	@echo 'Upload:'
+	@echo '	upload			- upload the Image to FPGA board'
+	@echo 
 	@echo 'Other:'
 	@echo '	sync			- create a copy of sources code and put them into directory build'
 	@echo '	menuconfig		- interactive curses-based configurator'
