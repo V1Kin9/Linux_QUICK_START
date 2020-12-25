@@ -5,10 +5,6 @@ comment "Select the core series"
 choice
 	prompt "Core"
 	default WH32
-	help
-		This is a help text that can expand over multiple lines and give some information about
-		the configuration parameter.
-
 	config WH32
 		bool "WH32"
 
@@ -21,12 +17,24 @@ comment "Configures for the hart numbers"
 
 menu "Hart numbers"
 	config HART_NUM
-	int "Integer parameter between 1 and 4(Harts)"
+	int "Integer parameter between 1 2 and 4(Harts)"
 	default 1
 	range 1 4
 
 endmenu
 
+comment "Select the development board"
+
+choice
+	prompt "Board"
+	default BOARD_K7
+	config	BOARD_S6
+		bool "xilinx Spartan 6"
+	config  BOARD_K7
+		bool "xilinx Kintex-7"
+	config  BOARD_MKU060FA
+		bool "Kintex Ultrascale MKU040FA"
+endchoice
 
 comment "Debug Configure"
 
@@ -40,8 +48,23 @@ config Debug
 menu "Frquency for HWJ"
 	visible if Debug
 	config SYS_CLK
-        int "Integer parameter between 0 and 100(MHz)"
-	default 50
-        range 0 100
+        int "Integer parameter between 0 and 100000000(Hz)"
+	default 50000000
+        range 0 100000000
 
+endmenu
+
+menu "RTC clock for HWJ"
+	visible if Debug
+	config RTC_CLK
+	int "Integer parameter between 0 and 100000000(Hz)"
+	default 1562500
+	range 0 100000000
+endmenu
+
+menu "DTB address"
+	visible if Debug
+	config DTB_ADDRESS
+	hex "HEX parameter"
+	default 0x50000000
 endmenu
