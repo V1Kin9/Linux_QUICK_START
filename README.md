@@ -1,3 +1,7 @@
+---
+typora-root-url: ./
+---
+
 # Linux_QUICK_START
 This is a tool that quickly help you to build up the Linux on HWJ-SoC. Now it is used for building the kernel for UCTECHIP WH series processors. 
 
@@ -108,24 +112,15 @@ $ git submodule update --init --recursive
 
 
 
-### Building the Linux Image
+### Building the Linux Image   
 
-1. First, you need to run the command below to create a copy of sources into the *build*.
-```
-$ make sync
-```
-
-If you want to change the code, you can change the code in directory *build* temporarily.
-
-When you want to get into the develop of the source code, I suggest you to change the code in the directory *src*, which will not be deleted when you run `$ make distclean`
-
-   
-
-2. Then you need to select the processor and hart number by typing the command:
+1. First you need to select the processor,hart number and FPGA develop board after typing the command:
 
 ```
 $ make menuconfig
 ```
+
+![](/figures/configure.png)
 
 You can also run  `$ make list-defconfigs` to see the defconfigs of WH processors. 
 
@@ -133,18 +128,14 @@ For example, you can run `$ make WH32-HWJ_defconfig` to select WH32 as the build
 
    
 
-3. When you done with the configuration, you should run `$ make all` to start building the Linux Image which includes the rootfs, build with busybox, and opensbi.
+2. When you done with the configuration, you should run `$ make all` to start building the Linux Image which includes the rootfs, build with busybox, and opensbi.
 
-You can find the finally Image in the directory *build/output*.
-
-   
 P.S. You should type the  password of you PC for creating the character device *console* and *null*
 
-```
-------Create rootfs directons start...--------
---------Create root,dev....----------
-Make node in dev/console dev/null
-Please input the passwd of your PC for creating the console and null
-[sudo] password for viking: 
-```
+![](/figures/passward.png)
 
+
+
+3. You can find the finally Image in the directory *build/output*.
+
+   ![](/figures/complete.png)
