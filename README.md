@@ -7,13 +7,13 @@ This is a tool that quickly help you to build up the Linux on HWJ-SoC. Now it is
 
 This article is roughly divided into four parts:
 
-[Building the toolchain](#Building the toolchain)
+* [Building the toolchain](#Building-the-toolchain)
 
-[Building the OpenOCD](#Building the OpenOCD)
+* [Building the OpenOCD](#Building-the-OpenOCD)
 
-[Building the Image](#Building the Image)
+* [Building the Image](#Building-the-Image)
 
-[Upload the Image](#Upload the Image)
+* [Upload the Image](#Upload-the-Image)
 
 
 
