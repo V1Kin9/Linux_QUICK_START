@@ -106,7 +106,7 @@ $ export PATH=$(PATH):/path/you/want/to/install/bin
 
 
 
-Test the toolchain by typing the following command to the Termial:
+Test the toolchain by typing the following command to the Terminal:
 
 ```
 $ riscv[32|64]-unknown-linux-gcc -v
@@ -142,15 +142,26 @@ Add the installation path of OpenOCD to the system environment:
 $ export PATH=$(PATH):/path/you/want/to/install/bin
 ```
 
-Test the OpenOCD by typing the following command to the Termial:
+Test the OpenOCD by typing the following command to the Terminal:
 
 ```
 ￼$ openocd -v 
 ```
 
-
-
 You will see the version information if you compile it completely and add the installation path to the system environment successfully.
+
+#### Enable Access to USB Devices
+
+By default, most Linux distributions do not give users permissions to access USB devices. One either needs root access or to be given the appropriate permissions. So you need to follow the next steps to enable the OS access to USB devices without sudo permissions.
+
+```
+$ cd host-tools
+$ ./create_rule.sh
+$ sudo cp 99-myusb.rules /etc/udev/rules.d/
+$ sudo udevadm control --reload
+```
+
+
 
 ## Building the Image
 
