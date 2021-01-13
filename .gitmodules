@@ -1,7 +1,7 @@
 [submodule "src/linux"]
 	path = src/linux
-	url = https://github.com/UCTECHIP/linux
-	branch = uctechip_4.19
+	url = https://github.com/V1Kin9/linux
+	branch = linux-5.7-rc4-rvv
 [submodule "src/opensbi"]
 	path = src/opensbi
 	url = https://github.com/UCTECHIP/opensbi
